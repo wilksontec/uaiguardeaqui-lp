@@ -174,10 +174,10 @@
     
     /* BLOCO 02 - DOR */
     .pain-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 50px; }
-    .pain-card { background: rgba(200, 80, 80, 0.04); border: 1px solid rgba(200, 80, 80, 0.15); padding: 30px; border-radius: 16px; transition: transform 0.3s; }
+    .pain-card { background: rgba(200, 80, 80, 0.04); border: 1px solid rgba(200, 80, 80, 0.15); padding: 30px 20px; border-radius: 16px; transition: transform 0.3s; display: flex; flex-direction: column; align-items: center; text-align: center; height: 100%; }
     .pain-card:hover { transform: translateY(-5px); border-color: rgba(200, 80, 80, 0.3); }
-    .pain-card h4 { color: #d65c5c; font-size: 1.2rem; margin-bottom: 12px; display: flex; align-items: flex-start; gap: 12px; line-height: 1.4; }
-    .pain-card h4 svg { flex-shrink: 0; margin-top: 3px; }
+    .pain-card h4 { color: #d65c5c; font-size: 1.25rem; margin-bottom: 15px; display: flex; flex-direction: column; align-items: center; gap: 15px; line-height: 1.4; }
+    .pain-card h4 svg { flex-shrink: 0; width: 32px; height: 32px; }
     
     /* BLOCO 03 - CONSEQUÊNCIA */
     .consequence-block { background: #0f0f11; }
@@ -308,18 +308,18 @@
             <h2 class="lp-title">O seu espaço acabou<br>E a bagunça está <span class="text-highlight">custando a sua paz</span></h2>
             <p class="lp-subtitle">A falta de espaço não afeta apenas a sua casa ou empresa, ela gera estresse diário. Você se identifica com alguma destas situações urgentes?</p>
             
-            <div class="pain-grid text-left">
+            <div class="pain-grid text-center">
                 <div class="pain-card">
                     <h4><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> O Caminhão Chegou e Agora?</h4>
-                    <p style="color: var(--text-muted);">Vai reformar ou mudar de casa e não tem um local seguro e limpo para estocar seus móveis sem que eles estraguem.</p>
+                    <p style="color: var(--text-muted); flex-grow: 1;">Vai reformar ou mudar de casa e não tem um local seguro e limpo para guardar seus móveis sem que eles estraguem.</p>
                 </div>
                 <div class="pain-card">
                     <h4><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> Queimando Dinheiro na Empresa?</h4>
-                    <p style="color: var(--text-muted);">Pagando aluguéis absurdos de salas comerciais apenas para guardar arquivo morto, maquinário parado ou estoque.</p>
+                    <p style="color: var(--text-muted); flex-grow: 1;">Pagando aluguéis absurdos em salas comerciais apenas para guardar arquivo morto, maquinário parado ou o seu estoque.</p>
                 </div>
                 <div class="pain-card">
                     <h4><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> A Casa Virou um Depósito?</h4>
-                    <p style="color: var(--text-muted);">As coisas foram acumulando, o quarto de visitas virou o "quarto da bagunça", e você não tem mais espaço para respirar na própria casa.</p>
+                    <p style="color: var(--text-muted); flex-grow: 1;">As coisas acumularam, o quarto de visitas virou depósito e você não tem mais espaço para respirar na própria casa.</p>
                 </div>
             </div>
         </div>
