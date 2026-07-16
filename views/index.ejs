@@ -214,6 +214,9 @@
     
     /* BLOCO 07 - PROVAS SOCIAIS */
     .reviews-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-top: 50px; }
+    @media (min-width: 600px) and (max-width: 992px) {
+        .reviews-grid { grid-template-columns: 1fr 1fr; }
+    }
     .review-card { background: var(--bg-card); padding: 25px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); text-align: left; display: flex; flex-direction: column; }
     .review-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
     .review-avatar { width: 45px; height: 45px; border-radius: 50%; background: var(--primary); color: #000; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem; flex-shrink: 0; }
