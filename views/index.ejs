@@ -1,0 +1,831 @@
+<%- include('partials/header') %>
+
+<!-- Estilos específicos da Landing Page Avançada -->
+<style>
+    /* Estilos Globais LP */
+    section.lp-block, section.hero-block, section.future-block {
+        max-width: 100% !important;
+        margin: 0 !important;
+    }
+    section.lp-block {
+        padding: 90px 5%;
+        border-bottom: 1px solid rgba(255,255,255,0.02);
+    }
+    .text-center { text-align: center; }
+    .max-w-800 { max-width: 800px; margin: 0 auto; }
+    .max-w-1000 { max-width: 1000px; margin: 0 auto; }
+    
+    /* Efeito VSL (Delay Estratégico) */
+    .vsl-hidden {
+        display: none !important;
+    }
+    .vsl-revealed {
+        display: flex !important; /* para o dot-nav que é flex */
+        animation: fadeInVSL 1.5s ease-in forwards;
+    }
+    .vsl-wrapper.vsl-revealed, section.vsl-revealed, a.vsl-revealed, div.vsl-revealed {
+        display: block !important;
+        animation: fadeInVSL 1.5s ease-in forwards;
+    }
+    .pulse-btn.vsl-revealed {
+        display: inline-flex !important;
+    }
+    @keyframes fadeInVSL {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Capa de Vídeo Customizada (VSL Thumbnail) */
+    .video-cover {
+        position: absolute;
+        inset: 0;
+        z-index: 10;
+        background: url('/images/thumbnail-video.webp') center/cover no-repeat;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: opacity 0.4s ease;
+    }
+    .video-cover::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.4); /* Escurece um pouco para dar destaque ao ícone de Play */
+        transition: background 0.3s ease;
+    }
+    .video-cover:hover::before {
+        background: rgba(0,0,0,0.1);
+    }
+    .play-icon-overlay {
+        position: relative;
+        z-index: 11;
+        width: 80px;
+        height: 80px;
+        background: var(--primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 10px 30px rgba(225,177,12,0.5);
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .play-icon-overlay svg {
+        width: 35px;
+        height: 35px;
+        color: #000;
+        margin-left: 5px; /* Compensa visualmente o peso do triângulo */
+    }
+    .video-cover:hover .play-icon-overlay {
+        transform: scale(1.15);
+    }
+    .cover-hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
+    
+    /* Destaques de Copy */
+    .text-highlight { color: var(--primary); }
+    
+    .lp-title {
+        font-size: clamp(1.8rem, 3.5vw, 2.5rem); /* Reduzido para caber sempre em 2 linhas no desktop */
+        font-weight: 800;
+        line-height: 1.2;
+        margin-bottom: 20px;
+    }
+    
+    .hero-block .lp-title {
+        font-size: clamp(2.5rem, 5vw, 3.8rem); /* Mantém gigante apenas na capa */
+        text-shadow: 0 4px 15px rgba(0,0,0,0.9); /* Sombra pesada para garantir leitura na foto de fundo */
+    }
+    
+    .lp-subtitle {
+        font-size: 1.3rem;
+        color: #e0e0e0; /* Mais claro e nítido que o text-muted anterior */
+        line-height: 1.6;
+        margin-bottom: 40px;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+        font-weight: 400;
+    }
+    
+    /* Botão de Alta Conversão (Efeito Pulsante + Shine) */
+    .pulse-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--primary);
+        color: #000 !important;
+        font-weight: 800;
+        border-radius: 8px; /* Cantos fiéis à identidade linear da Uai Guarde Aqui */
+        padding: 14px 35px !important; /* Mais contido para equilibrar com o vídeo de 560px */
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        border: none;
+        position: relative;
+        overflow: hidden;
+        animation: pulse-glow 2.5s infinite;
+        z-index: 1;
+        cursor: pointer;
+    }
+    .pulse-btn::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%; width: 50%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+        transform: skewX(-20deg);
+        transition: left 0.7s ease;
+        z-index: -1;
+    }
+    .pulse-btn:hover {
+        transform: translateY(-5px) scale(1.02);
+        background: #f1c40f;
+    }
+    .pulse-btn:hover::before {
+        left: 200%;
+    }
+    @keyframes pulse-glow {
+        0% { box-shadow: 0 0 0 0 rgba(225,177,12,0.6); }
+        70% { box-shadow: 0 0 0 20px rgba(225,177,12,0); }
+        100% { box-shadow: 0 0 0 0 rgba(225,177,12,0); }
+    }
+    
+    /* BLOCO 01 - HERO */
+    .hero-block { 
+        padding: 120px 5% 80px; 
+        background: url('/images/hero.webp') center/cover no-repeat fixed;
+        position: relative;
+    }
+    .hero-block::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        /* Mistura um leve reflexo amarelo no topo com escuridão total embaixo */
+        background: radial-gradient(circle at top, rgba(225,177,12,0.08) 0%, rgba(10,10,12,0.85) 50%, rgba(10,10,12,1) 100%);
+        z-index: 0;
+    }
+    .hero-block > * {
+        position: relative;
+        z-index: 1;
+    }
+    .hero-block h1 { text-wrap: balance; }
+    
+    /* BLOCO 02 - DOR */
+    .pain-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 50px; }
+    .pain-card { background: rgba(200, 80, 80, 0.04); border: 1px solid rgba(200, 80, 80, 0.15); padding: 30px; border-radius: 16px; transition: transform 0.3s; }
+    .pain-card:hover { transform: translateY(-5px); border-color: rgba(200, 80, 80, 0.3); }
+    .pain-card h4 { color: #d65c5c; font-size: 1.2rem; margin-bottom: 12px; display: flex; align-items: flex-start; gap: 12px; line-height: 1.4; }
+    .pain-card h4 svg { flex-shrink: 0; margin-top: 3px; }
+    
+    /* BLOCO 03 - CONSEQUÊNCIA */
+    .consequence-block { background: #0f0f11; }
+    .cons-list { list-style: none; padding: 0; max-width: 800px; margin: 0 auto; text-align: left; }
+    .cons-list li { 
+        padding: 20px 0; 
+        border-bottom: 1px solid rgba(255,255,255,0.05); 
+        display: grid; 
+        grid-template-columns: 24px 200px 1fr; /* 3 Colunas: Ícone, Título, Texto */
+        gap: 25px; 
+        align-items: center; 
+        font-size: 1.1rem; 
+        color: #a0a0a5; 
+    }
+    .cons-title { color: #fff; font-weight: bold; }
+    .cons-text { line-height: 1.5; }
+    
+    /* BLOCO 05 - COMO FUNCIONA */
+    .steps-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 50px; }
+    .step-box { background: var(--bg-card); padding: 30px 20px; text-align: center; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); position: relative; }
+    .step-num { width: 50px; height: 50px; background: rgba(225,177,12,0.1); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; margin: 0 auto 20px; }
+    
+    /* BLOCO 06 - BENEFÍCIOS (Transformação) */
+    .benefits-block { background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-dark) 100%); }
+    .benefit-item { display: flex; gap: 20px; margin-bottom: 30px; align-items: flex-start; }
+    .benefit-icon { flex-shrink: 0; color: var(--primary); }
+    .benefit-text h3 { margin-bottom: 5px; font-size: 1.3rem; }
+    
+    /* BLOCO 08 - OBJEÇÕES (FAQ Style) */
+    .obj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: left; }
+    .obj-card { background: var(--bg-card); padding: 25px; border-radius: 12px; border-left: 4px solid var(--primary); }
+    
+    /* BLOCO 07 - PROVAS SOCIAIS */
+    .reviews-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-top: 50px; }
+    .review-card { background: var(--bg-card); padding: 25px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); text-align: left; display: flex; flex-direction: column; }
+    .review-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+    .review-avatar { width: 45px; height: 45px; border-radius: 50%; background: var(--primary); color: #000; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem; flex-shrink: 0; }
+    .review-author h4 { margin: 0; font-size: 1.05rem; color: #fff; }
+    .review-stars { color: var(--primary); margin-top: 5px; display: flex; gap: 2px; }
+    .review-text { color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; flex-grow: 1; font-style: italic; }
+    
+    /* BLOCO 08 - FAQ / OBJEÇÕES */
+    .faq-container { text-align: left; max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+    .faq-item { background: var(--bg-card); border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
+    .faq-q { padding: 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 1.1rem; }
+    .faq-a { padding: 0 20px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; color: var(--text-muted); }
+    .faq-item.active .faq-a { padding: 0 20px 20px; max-height: 300px; }
+    .faq-item.active .faq-icon { transform: rotate(45deg); color: var(--primary); }
+    .faq-icon { transition: transform 0.3s ease; font-size: 1.5rem; line-height: 1; }
+    
+    /* BLOCO 13 - FINALIZAÇÃO */
+    .future-block { background: var(--bg-dark); padding: 80px 5%; text-align: center; }
+
+    /* WHATSAPP FLUTUANTE */
+    .float-whatsapp {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        background-color: #25d366;
+        color: #FFF;
+        border-radius: 50%;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.3s ease;
+    }
+    .float-whatsapp:hover { transform: scale(1.1); color: #FFF; }
+    .float-whatsapp svg { width: 35px; height: 35px; fill: currentColor; }
+
+    @media (max-width: 992px) {
+        .steps-4 { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+        .float-whatsapp { bottom: 20px; right: 20px; width: 50px; height: 50px; }
+        .float-whatsapp svg { width: 28px; height: 28px; }
+        .hero-block { padding: 60px 5%; }
+        .steps-4 { grid-template-columns: 1fr; }
+        .obj-grid { grid-template-columns: 1fr; }
+        .cons-list li { grid-template-columns: 24px 1fr; gap: 5px 15px; align-items: flex-start; }
+        .cons-icon { grid-column: 1; grid-row: 1; margin-top: 3px; }
+        .cons-title { grid-column: 2; grid-row: 1; }
+        .cons-text { grid-column: 2; grid-row: 2; }
+        .faq-container { grid-template-columns: 1fr; }
+    }
+</style>
+
+<main>
+    <!-- Dot Navigation -->
+    <nav class="dot-nav vsl-hidden">
+        <a href="#solucao" class="dot" title="A Solução"></a>
+        <a href="#como-funciona" class="dot" title="Como Funciona"></a>
+        <a href="#beneficios" class="dot" title="Benefícios"></a>
+        <a href="#faq" class="dot" title="FAQ"></a>
+        <a href="#oferta" class="dot" title="Fazer Orçamento"></a>
+    </nav>
+
+    <!-- BLOCO 01 - HERO (Impacto Imediato) -->
+    <section class="hero-block text-center">
+        <h1 class="lp-title">Libere espaço na sua vida <span class="text-highlight">sem se desfazer do que importa</span></h1>
+        <p class="lp-subtitle max-w-800">Descubra como funciona o primeiro Box Privativo do Vale do Aço e veja por que milhares de pessoas estão abandonando aluguéis comerciais caros. Assista ao vídeo abaixo:</p>
+        
+        <div class="video-container">
+            <iframe id="vsl-video" src="https://player.vimeo.com/video/1210348381?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479&color=E1B10C" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" title="vsl uai Guarde Aqui"></iframe>
+            
+            <!-- Capa Customizada -->
+            <div id="vsl-cover" class="video-cover">
+                <div class="play-icon-overlay">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                </div>
+            </div>
+        </div>
+
+        <a href="#solucao" class="pulse-btn vsl-hidden">
+            Quero conhecer os boxes
+        </a>
+    </section>
+
+    <!-- VSL WRAPPER: Oculta o restante da página até o cliente assistir 15s do vídeo -->
+    <div class="vsl-wrapper vsl-hidden">
+
+    <!-- BLOCO 02 - A DOR -->
+    <section class="lp-block">
+        <div class="max-w-1000 text-center">
+            <h2 class="lp-title">O seu espaço acabou<br>E a bagunça está <span class="text-highlight">custando a sua paz</span></h2>
+            <p class="lp-subtitle">A falta de espaço não afeta apenas a sua casa ou empresa, ela gera estresse diário. Você se identifica com alguma destas situações urgentes?</p>
+            
+            <div class="pain-grid text-left">
+                <div class="pain-card">
+                    <h4><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> O Caminhão Chegou e Agora?</h4>
+                    <p style="color: var(--text-muted);">Vai reformar ou mudar de casa e não tem um local seguro e limpo para estocar seus móveis sem que eles estraguem.</p>
+                </div>
+                <div class="pain-card">
+                    <h4><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> Queimando Dinheiro na Empresa?</h4>
+                    <p style="color: var(--text-muted);">Pagando aluguéis absurdos de salas comerciais apenas para guardar arquivo morto, maquinário parado ou estoque.</p>
+                </div>
+                <div class="pain-card">
+                    <h4><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> A Casa Virou um Depósito?</h4>
+                    <p style="color: var(--text-muted);">As coisas foram acumulando, o quarto de visitas virou o "quarto da bagunça", e você não tem mais espaço para respirar na própria casa.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BLOCO 03 - A CONSEQUÊNCIA -->
+    <section class="lp-block consequence-block text-center">
+        <h2 class="lp-title" style="font-size: 2.2rem;">O preço oculto de ignorar a falta de espaço</h2>
+        <ul class="cons-list" style="margin-top: 40px;">
+            <li>
+                <div class="cons-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff4d4d" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></div>
+                <div class="cons-title">Prejuízo Financeiro:</div>
+                <div class="cons-text">Continuar pagando aluguel de imóveis comerciais gigantescos quando você só precisa de um box.</div>
+            </li>
+            <li>
+                <div class="cons-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff4d4d" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></div>
+                <div class="cons-title">Danos Materiais:</div>
+                <div class="cons-text">Deixar móveis caros e estoques valiosos expostos à umidade, poeira e furtos em garagens abertas.</div>
+            </li>
+            <li>
+                <div class="cons-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff4d4d" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></div>
+                <div class="cons-title">Desgaste Emocional:</div>
+                <div class="cons-text">Conviver diariamente com a desorganização que suga a sua produtividade e energia.</div>
+            </li>
+        </ul>
+    </section>
+
+    <!-- BLOCO 04 - A SOLUÇÃO -->
+    <section id="solucao" class="lp-block text-center">
+        <div class="max-w-800">
+            <span class="highlight" style="font-weight: bold; letter-spacing: 2px; text-transform: uppercase;">A SOLUÇÃO</span>
+            <h2 class="lp-title" style="margin-top: 15px;">A chave para o seu novo espaço</h2>
+            <p class="lp-subtitle">Conheça o <strong class="text-highlight">Uai Guarde Aqui</strong>. O primeiro e mais moderno Box Privativo (Self Storage) do Vale do Aço. Um espaço limpo, iluminado e extremamente seguro onde <strong>só você</strong> tranca, leva a chave e acessa quando quiser.</p>
+        </div>
+    </section>
+
+    <!-- BLOCO 05 - COMO FUNCIONA -->
+    <section id="como-funciona" class="lp-block" style="background: rgba(225,177,12,0.02);">
+        <div class="max-w-1000 text-center">
+            <h2 class="lp-title">Seu Box garantido em passos simples</h2>
+            
+            <div class="steps-4">
+                <div class="step-box">
+                    <div class="step-num">1</div>
+                    <h4>Escolha o tamanho</h4>
+                    <p style="font-size: 0.95rem; color: var(--text-muted); margin-top: 10px;">De 1m² a 6m², temos a medida exata para a sua necessidade (sem pagar por espaço ocioso).</p>
+                </div>
+                <div class="step-box">
+                    <div class="step-num">2</div>
+                    <h4>Assine sem fiador</h4>
+                    <p style="font-size: 0.95rem; color: var(--text-muted); margin-top: 10px;">Esqueça fiador, taxas ocultas e contratos amarrados. É alugou, usou. Pagamento mensal flexível.</p>
+                </div>
+                <div class="step-box">
+                    <div class="step-num">3</div>
+                    <h4>Guarde seus pertences</h4>
+                    <p style="font-size: 0.95rem; color: var(--text-muted); margin-top: 10px;">Traga seus bens e organize do seu jeito no seu box. Use nossos carrinhos para facilitar a vida.</p>
+                </div>
+                <div class="step-box">
+                    <div class="step-num">4</div>
+                    <h4>Tranque e leve a chave</h4>
+                    <p style="font-size: 0.95rem; color: var(--text-muted); margin-top: 10px;">Feche o cadeado e leve a chave com você. O espaço é 100% seu e estritamente privativo.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BLOCO 06 - BENEFÍCIOS -->
+    <section id="beneficios" class="lp-block benefits-block">
+        <div class="max-w-1000">
+            <h2 class="lp-title text-center" style="margin-bottom: 50px;">Muito mais que um depósito<br>Uma extensão segura da vida</h2>
+            <div class="grid-2-cols" style="gap: 40px;">
+                <div class="benefit-item">
+                    <div class="benefit-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div>
+                    <div class="benefit-text">
+                        <h3>Monitoramento e Segurança</h3>
+                        <p style="color: var(--text-muted);">Câmeras 24h, alarmes e acesso seguro via reconhecimento facial. Estrutura completa para guardar seus pertences com tranquilidade.</p>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></div>
+                    <div class="benefit-text">
+                        <h3>Espaço 100% Privativo</h3>
+                        <p style="color: var(--text-muted);">Você tranca o box com o seu cadeado e leva a chave. O ambiente é limpo, dedetizado e nem a nossa equipe tem acesso às suas coisas.</p>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg></div>
+                    <div class="benefit-text">
+                        <h3>Flexibilidade Sem Multas</h3>
+                        <p style="color: var(--text-muted);">Sem prazo mínimo de permanência. Precisa cancelar ou trocar por um box maior mês que vem? Nós resolvemos de forma simples e rápida.</p>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg></div>
+                    <div class="benefit-text">
+                        <h3>Redução de Custos (Empresas)</h3>
+                        <p style="color: var(--text-muted);">Escale seu estoque pagando apenas pelo espaço que realmente usa. Livre-se de burocracias e despesas com IPTU, condomínio, água e luz.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BLOCO 07 - PROVAS -->
+    <section class="lp-block text-center">
+        <div class="max-w-1000">
+            <h2 class="lp-title">Somos<br><span class="text-highlight">Pioneiros no Vale do Aço</span></h2>
+            <p class="lp-subtitle">Nós trouxemos o conceito mundial de Self Storage para Coronel Fabriciano.</p>
+            
+            <div class="reviews-grid">
+                <!-- Review 1 (5 estrelas) -->
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="review-avatar">R</div>
+                        <div class="review-author">
+                            <h4>Ricardo Lemos</h4>
+                            <div class="review-stars">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="review-text">"Estrutura impecável. Resolveu o problema de espaço do meu comércio sem eu precisar alugar um galpão gigantesco. Atendimento nota 10."</div>
+                </div>
+
+                <!-- Review 2 (4 estrelas) -->
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="review-avatar" style="background: #e9ecef;">C</div>
+                        <div class="review-author">
+                            <h4>Camila Ferreira</h4>
+                            <div class="review-stars">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="review-text">"Muito prático! Estava com a casa em reforma e guardei todos os meus móveis lá. O espaço é realmente limpo. Tive uma dúvida na contratação mas fui bem atendida."</div>
+                </div>
+
+                <!-- Review 3 (5 estrelas) -->
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="review-avatar" style="background: #4a5568; color: #fff;">M</div>
+                        <div class="review-author">
+                            <h4>Marcelo G.</h4>
+                            <div class="review-stars">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="review-text">"Finalmente algo assim na nossa região. A segurança do local com as câmeras e o acesso eletrônico me deixou muito tranquilo para guardar equipamentos do meu escritório."</div>
+                </div>
+
+                <!-- Review 4 (4 estrelas) -->
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="review-avatar" style="background: #2d3748; color: #fff;">A</div>
+                        <div class="review-author">
+                            <h4>Amanda V.</h4>
+                            <div class="review-stars">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="review-text">"Excelente opção. Só achei que poderia ter carrinhos de carga maiores disponíveis no momento que fui, mas o espaço do box em si é perfeito e não tem cheiro de mofo."</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BLOCO 08 - QUEBRA DE OBJEÇÕES / FAQ -->
+    <section id="faq" class="lp-block" style="background: rgba(255,255,255,0.02);">
+        <div class="max-w-1000 text-center">
+            <h2 class="lp-title" style="margin-bottom: 40px;">Ficou com alguma dúvida?</h2>
+            
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-q">Posso acessar meu box quando quiser? <span class="faq-icon">+</span></div>
+                    <div class="faq-a"><p style="padding-top: 10px;">Sim, durante o nosso amplo horário de funcionamento você tem acesso livre e irrestrito ao seu box usando nosso sistema de biometria facial.</p></div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q">Precisa de fiador para alugar? <span class="faq-icon">+</span></div>
+                    <div class="faq-a"><p style="padding-top: 10px;">Zero burocracia imobiliária. Você não precisa de fiador e o processo de contratação é 100% digital e rápido.</p></div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q">Existe fidelidade ou tempo mínimo? <span class="faq-icon">+</span></div>
+                    <div class="faq-a"><p style="padding-top: 10px;">Não. Os nossos contratos são renovados mensalmente. Você usa o espaço pelo tempo que precisar e cancela sem multas abusivas.</p></div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q">Meus pertences ficam seguros? <span class="faq-icon">+</span></div>
+                    <div class="faq-a"><p style="padding-top: 10px;">Sim. Nossa estrutura conta com câmeras 24h, alarme e controle de acesso. Somente você tem a chave do seu cadeado.</p></div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q">E se eu precisar de mais (ou menos) espaço? <span class="faq-icon">+</span></div>
+                    <div class="faq-a"><p style="padding-top: 10px;">Você tem flexibilidade total. Caso precise de um box diferente no próximo mês, nós fazemos a troca rapidamente pagando apenas a diferença.</p></div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q">O que não é permitido guardar no box? <span class="faq-icon">+</span></div>
+                    <div class="faq-a"><p style="padding-top: 10px;">Por segurança, não é permitido armazenar produtos inflamáveis, tóxicos, perecíveis ou ilícitos. Todo o resto é bem-vindo.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BLOCO 09 - SOBRE A EMPRESA -->
+    <section class="lp-block">
+        <div class="max-w-800 text-center" style="margin: 0 auto;">
+            <img src="/images/logo/logo.webp" alt="Uai Guarde Aqui" style="max-height: 120px; margin: 0 auto 40px;">
+            <p style="color: #fff; line-height: 1.6; font-size: 1.8rem; font-style: italic; font-weight: 500;">
+                "Nós não guardamos apenas objetos.<br>Guardamos <span class="text-highlight">histórias, projetos e novos começos.</span>"
+            </p>
+        </div>
+    </section>
+
+    <!-- BLOCO 10 - A OFERTA (IA + Formulário) -->
+    <section id="oferta" class="lp-block" style="background: linear-gradient(180deg, var(--bg-dark) 0%, rgba(225,177,12,0.05) 100%); padding-top: 120px;">
+        <div class="max-w-800">
+            
+            <div class="text-center" style="margin-bottom: 50px;">
+                <h2 class="lp-title" style="font-size: 2.5rem;">Pare de improvisar<br>Alugue o seu <span class="text-highlight">espaço definitivo hoje</span></h2>
+                <p class="lp-subtitle">Nossos boxes são limitados e a demanda no Vale do Aço é alta. Descubra qual box resolve o seu problema em 10 minutos.</p>
+            </div>
+
+            <!-- Calculadora IA -->
+            <div class="ai-container" style="border: 1px solid rgba(225,177,12,0.2); background: var(--bg-card); padding: 40px; border-radius: 16px; margin-bottom: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                <div class="text-center">
+                    <h3 style="color: var(--primary); font-size: 1.4rem; margin-bottom: 10px;">Não sabe qual tamanho escolher?</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 20px;">Digite o que você vai guardar e nossa Inteligência Artificial calcula o tamanho exato do box para você.</p>
+                </div>
+                
+                <form id="ai-form" class="ai-form">
+                    <textarea id="ai-input" placeholder="Ex: Preciso guardar uma geladeira, um sofá de 3 lugares e umas 15 caixas médias de papelão..." required style="min-height: 120px; background: rgba(0,0,0,0.3); width: 100%; border: 1px solid rgba(255,255,255,0.1); padding: 15px; color: #fff; border-radius: 8px;"></textarea>
+                    <button type="submit" id="ai-submit" class="cta-button" style="width: 100%; border-radius: 8px; margin-top: 15px; padding: 15px !important;">
+                        <span id="ai-btn-text">Pergunte para nossa IA</span>
+                        <div id="ai-spinner" class="spinner" style="display: none; margin: 0 auto; border-top-color: #000;"></div>
+                    </button>
+                </form>
+
+                <div id="ai-result" style="display: none; margin-top: 25px; padding: 20px; background: rgba(0,0,0,0.3); border-left: 3px solid var(--primary); border-radius: 0 8px 8px 0;">
+                    <h4 style="margin-bottom: 10px; color: #fff;">Recomendação:</h4>
+                    <div id="ai-response-text" style="color: var(--text-muted); line-height: 1.5;"></div>
+                </div>
+            </div>
+
+            <!-- Formulário -->
+            <div class="qualification-container" style="background: var(--bg-card); padding: 40px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                <h3 style="font-size: 1.8rem; margin-bottom: 10px; text-align: center;">Fale com um de nossos especialistas e receba um <span class="text-highlight">orçamento rápido via WhatsApp.</span></h3>
+                <p style="text-align: center; color: var(--text-muted); margin-bottom: 30px;">Preencha os dados abaixo para garantir a disponibilidade do seu box.</p>
+                
+                <form id="lead-form">
+                    <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+                    
+                    <div class="grid-2-cols" style="margin-bottom: 20px;">
+                        <div>
+                            <label style="display:block; margin-bottom:8px; color:#fff;">Nome Completo</label>
+                            <input type="text" id="nome" class="qual-form-control" required style="width:100%; padding:15px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); color:#fff; border-radius:8px;">
+                        </div>
+                        <div>
+                            <label style="display:block; margin-bottom:8px; color:#fff;">WhatsApp</label>
+                            <input type="tel" id="telefone" class="qual-form-control" required style="width:100%; padding:15px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); color:#fff; border-radius:8px;">
+                        </div>
+                    </div>
+
+                    <div class="grid-2-cols" style="margin-bottom: 20px;">
+                        <div>
+                            <label style="display:block; margin-bottom:8px; color:#fff;">Perfil</label>
+                            <select id="perfil" required style="width:100%; padding:15px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); color:#fff; border-radius:8px; appearance:none;">
+                                <option value="" disabled selected>Física ou Jurídica?</option>
+                                <option value="Pessoa Física">Para minha residência</option>
+                                <option value="Empresa">Para minha empresa</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="display:block; margin-bottom:8px; color:#fff;">Urgência</label>
+                            <select id="prazo" required style="width:100%; padding:15px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); color:#fff; border-radius:8px; appearance:none;">
+                                <option value="" disabled selected>Quando precisa?</option>
+                                <option value="Imediato">Imediato (Urgente)</option>
+                                <option value="Neste mês">Ainda este mês</option>
+                                <option value="Apenas orçando">Apenas orçando</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="display:block; margin-bottom:8px; color:#fff;">Sabe o tamanho ideal do box?</label>
+                        <select id="sabe_tamanho" required style="width:100%; padding:15px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); color:#fff; border-radius:8px; appearance:none;">
+                            <option value="" disabled selected>Selecione...</option>
+                            <option value="Não">Não, preciso de ajuda com o tamanho</option>
+                            <option value="Sim">Sim, já sei o tamanho exato</option>
+                        </select>
+                    </div>
+                    <div id="container-tamanho" style="display: none; margin-bottom: 20px;">
+                        <label style="display:block; margin-bottom:8px; color:#fff;">Qual o tamanho?</label>
+                        <select id="tamanho_box" style="width:100%; padding:15px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); color:#fff; border-radius:8px; appearance:none;">
+                            <option value="" disabled selected>Selecione...</option>
+                            <option value="Micro (1m²)">Micro (1m²)</option>
+                            <option value="Pequeno (3m²)">Pequeno (3m²)</option>
+                            <option value="Médio (4,5m²)">Médio (4,5m²)</option>
+                            <option value="Grande (6m²)">Grande (6m²)</option>
+                        </select>
+                    </div>
+
+                    <div id="container-necessidade" style="margin-bottom: 20px;">
+                        <label style="display:block; margin-bottom:8px; color:#fff;">O que você precisa guardar?</label>
+                        <textarea id="necessidade" required rows="2" style="width:100%; padding:15px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); color:#fff; border-radius:8px;" placeholder="Ex: Móveis de 1 quarto, estoque da loja..."></textarea>
+                    </div>
+
+                    <div id="form-message" style="display: none; margin-bottom: 20px; padding: 15px; border-radius: 8px; text-align: center; font-weight: 600;"></div>
+
+                    <!-- BLOCO 11 - CTA -->
+                    <button type="submit" id="submit-btn" class="cta-button" style="width: 100%; padding: 20px !important; font-size: 1.2rem; border-radius: 8px; margin-top: 10px; box-shadow: 0 10px 20px rgba(225,177,12,0.3);">
+                        Solicitar meu orçamento
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- BLOCO 13 - FINALIZAÇÃO -->
+    <section class="future-block">
+        <div class="max-w-800" style="margin: 0 auto;">
+            <h2 class="lp-title" style="font-size: 2.2rem; margin-bottom: 20px; color: #fff;">O espaço que faltava<br>para a sua <span class="text-highlight">tranquilidade</span></h2>
+            <p style="font-size: 1.15rem; color: var(--text-muted); line-height: 1.6;">
+                Sua casa livre, sua empresa organizada e a certeza absoluta de que<br>aquilo que é valioso para você está protegido 24 horas por dia.
+            </p>
+        </div>
+    </section>
+    
+    </div> <!-- Fim VSL Wrapper -->
+
+    <!-- Botão Flutuante WhatsApp -->
+    <a href="https://wa.me/5531900000000" target="_blank" class="float-whatsapp" title="Fale conosco pelo WhatsApp">
+        <svg viewBox="0 0 448 512" fill="currentColor">
+            <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zM223.9 438.2c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-2.7-4.5.3-7.5 2.8-10 2.2-2.3 5.5-6.5 8.3-9.7 2.8-3.3 3.7-5.6 5.5-9.3 1.9-3.7.9-7-1.4-11-2.2-4.1-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
+        </svg>
+    </a>
+</main>
+
+<div class="vsl-wrapper vsl-hidden">
+    <%- include('partials/footer') %>
+</div>
+
+<!-- Scripts -->
+<script src="https://player.vimeo.com/api/player.js"></script>
+<script>
+// Inicializa a API do Vimeo
+var iframe = document.getElementById('vsl-video');
+var player = new Vimeo.Player(iframe);
+
+// Interação com a Capa Customizada
+document.getElementById('vsl-cover').addEventListener('click', function() {
+    player.play();
+    this.classList.add('cover-hidden');
+});
+
+var vslRevealed = false;
+
+// Garante que a capa suma se o usuário der o play nativamente
+player.on('play', function() {
+    document.getElementById('vsl-cover').classList.add('cover-hidden');
+});
+
+// VSL Player API (Vimeo): Checa o tempo de reprodução em tempo real
+player.on('timeupdate', function(data) {
+    // data.seconds retorna o tempo atual exato em que o vídeo está
+    if (data.seconds >= 15 && !vslRevealed) {
+        vslRevealed = true;
+        
+        // Libera a página
+        document.querySelectorAll('.vsl-hidden').forEach(function(el) {
+            el.classList.remove('vsl-hidden');
+            el.classList.add('vsl-revealed');
+        });
+    }
+});
+</script>
+<script>
+// FAQ Accordion
+document.querySelectorAll('.faq-q').forEach(q => {
+    q.addEventListener('click', () => {
+        const item = q.parentElement;
+        const isActive = item.classList.contains('active');
+        document.querySelectorAll('.faq-item').forEach(el => {
+            el.classList.remove('active');
+            el.querySelector('.faq-icon').innerText = '+';
+        });
+        if (!isActive) {
+            item.classList.add('active');
+            item.querySelector('.faq-icon').innerText = '-';
+        }
+    });
+});
+
+// Lógica do Tamanho do Box
+document.getElementById('sabe_tamanho').addEventListener('change', function() {
+    const containerTamanho = document.getElementById('container-tamanho');
+    const tamanhoBox = document.getElementById('tamanho_box');
+    const containerNecessidade = document.getElementById('container-necessidade');
+    const necessidade = document.getElementById('necessidade');
+
+    if (this.value === 'Sim') {
+        containerTamanho.style.display = 'block';
+        tamanhoBox.required = true;
+        containerNecessidade.style.display = 'none';
+        necessidade.required = false;
+        necessidade.value = 'Cliente já sabe o tamanho';
+    } else {
+        containerTamanho.style.display = 'none';
+        tamanhoBox.required = false;
+        tamanhoBox.value = '';
+        containerNecessidade.style.display = 'block';
+        necessidade.required = true;
+        necessidade.value = '';
+    }
+});
+
+// Formulário Lead
+document.getElementById('lead-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const submitBtn = document.getElementById('submit-btn');
+    const formMessage = document.getElementById('form-message');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = 'Processando...';
+    formMessage.style.display = 'none';
+
+    try {
+        const recaptchaToken = await grecaptcha.execute('6LdJVFQtAAAAAF4x3bwkWXOMP7qTCjGEAXa8RIZc', {action: 'submit'});
+        document.getElementById('g-recaptcha-response').value = recaptchaToken;
+
+        const data = {
+            'g-recaptcha-response': recaptchaToken,
+            nome: document.getElementById('nome').value,
+            telefone: document.getElementById('telefone').value,
+            email: 'Não preenchido', // Removido do HTML
+            perfil: document.getElementById('perfil').value,
+            necessidade: document.getElementById('necessidade').value,
+            prazo: document.getElementById('prazo').value,
+            tamanho_box: document.getElementById('tamanho_box').value || 'Não sabe/Solicitou ajuda',
+            mensagem: 'Nenhuma adicional'
+        };
+
+        const response = await fetch('/api/lead', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+            formMessage.style.display = 'block';
+            formMessage.style.backgroundColor = 'rgba(37, 211, 102, 0.1)';
+            formMessage.style.color = '#25D366';
+            formMessage.style.border = '1px solid #25D366';
+            formMessage.innerHTML = '✅ Recebemos sua solicitação! Em breve te chamaremos no WhatsApp.';
+            document.getElementById('lead-form').reset();
+        } else {
+            throw new Error(result.message || 'Erro ao processar.');
+        }
+    } catch (error) {
+        formMessage.style.display = 'block';
+        formMessage.style.backgroundColor = 'rgba(255, 77, 77, 0.1)';
+        formMessage.style.color = '#ff4d4d';
+        formMessage.style.border = '1px solid #ff4d4d';
+        formMessage.innerHTML = '❌ Erro: ' + error.message;
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Solicitar meu orçamento';
+    }
+});
+
+// Calculadora IA
+document.getElementById('ai-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const input = document.getElementById('ai-input').value;
+    const submitBtn = document.getElementById('ai-submit');
+    const btnText = document.getElementById('ai-btn-text');
+    const spinner = document.getElementById('ai-spinner');
+    const resultContainer = document.getElementById('ai-result');
+    const responseText = document.getElementById('ai-response-text');
+
+    submitBtn.disabled = true;
+    btnText.style.display = 'none';
+    spinner.style.display = 'block';
+    resultContainer.style.display = 'none';
+
+    try {
+        const res = await fetch('/api/descubra-meu-box', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mensagem: input })
+        });
+        const data = await res.json();
+        if (res.ok) {
+            responseText.innerHTML = `<p>${data.recomendacao.replace(/\\n/g, '<br>')}</p>`;
+            resultContainer.style.display = 'block';
+        } else {
+            responseText.innerHTML = `<p style="color: #ff4d4d;">${data.error}</p>`;
+            resultContainer.style.display = 'block';
+        }
+    } catch (err) {
+        responseText.innerHTML = `<p style="color: #ff4d4d;">Erro de conexão. Tente novamente.</p>`;
+        resultContainer.style.display = 'block';
+    } finally {
+        submitBtn.disabled = false;
+        btnText.style.display = 'block';
+        spinner.style.display = 'none';
+    }
+});
+</script>

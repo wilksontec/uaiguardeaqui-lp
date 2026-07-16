@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="O melhor Box Self Storage de Coronel Fabriciano. Descubra como liberar espaço na sua casa ou empresa com segurança 24h.">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Uai Guarde Aqui | Soluções em Self Storage">
+    <meta property="og:description" content="Libere espaço na sua vida. Aluguel de boxes privativos sem burocracia no Vale do Aço.">
+    <meta property="og:image" content="https://uaiguardeaqui.com.br/images/fachada.webp">
+    
+    <title><%= typeof title !== 'undefined' ? title : 'Uai Guarde Aqui | Landing Page' %></title>
+    <link rel="icon" type="image/webp" href="/images/logo/logo-amarela.webp">
+    
+    <!-- Usar CSS global -->
+    <link rel="stylesheet" href="/css/style.css?v=3">
+
+    <!-- Estilos específicos da Landing Page -->
+    <style>
+        /* Ajustes de Altura e Fundo do Cabeçalho LP */
+        header.lp-header {
+            padding: 15px 5%; 
+            background-color: transparent; 
+            transition: all 0.3s ease;
+        }
+        header.lp-header .logo img {
+            height: 30px; /* Bem menor e discreta */
+            transition: height 0.3s ease;
+            opacity: 0.8; /* Levemente translúcida para não chamar muita atenção */
+        }
+        header.lp-header .logo img:hover {
+            opacity: 1;
+        }
+        
+        /* Quando rolar a página (classe adicionada pelo main.js) */
+        header.lp-header.scrolled {
+            background-color: rgba(15, 15, 17, 0.95); /* Fundo escuro levemente translúcido */
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            padding: 8px 5%; /* Fica ainda mais estreito ao rolar */
+        }
+        header.lp-header.scrolled .logo img {
+            height: 28px;
+        }
+
+        .lp-hero {
+            padding: 140px 5% 80px;
+            text-align: center;
+            background: linear-gradient(180deg, var(--bg-dark) 0%, #17171a 100%);
+            min-height: auto;
+        }
+        .lp-hero h1 {
+            font-size: clamp(2.2rem, 5vw, 3.8rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            text-wrap: balance;
+        }
+        .lp-hero p {
+            font-size: 1.25rem;
+            color: #D1D1D5;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+        }
+        
+        /* YouTube Video Wrapper (Efeito 3D Saltado) */
+        .video-container {
+            position: relative;
+            width: 100%;
+            max-width: 560px;
+            aspect-ratio: 16 / 9;
+            margin: 0 auto 50px;
+            border-radius: 16px;
+            
+            /* O Segredo do Efeito "Saltado pra frente" */
+            border: 1px solid rgba(225,177,12,0.4);
+            box-shadow: 
+                0 25px 50px rgba(0,0,0,0.8),         /* Sombra base profunda */
+                0 0 0 8px rgba(26,26,30,0.5),        /* Falsa moldura externa (Bezel) */
+                0 0 30px rgba(225,177,12,0.15);      /* Glow sutil com a cor da marca */
+            transform: translateY(-5px);             /* Levanta fisicamente o elemento */
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+        }
+        
+        .video-container:hover {
+            transform: translateY(-12px) scale(1.03); /* Salta mais ainda ao passar o mouse */
+            box-shadow: 
+                0 35px 60px rgba(0,0,0,0.9),
+                0 0 0 8px rgba(26,26,30,0.7),
+                0 0 45px rgba(225,177,12,0.25);
+            border-color: rgba(225,177,12,0.6);
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        
+        /* Formulário de Qualificação Premium */
+        .qualification-section {
+            padding: 80px 5%;
+            background: var(--bg-card);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .qualification-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(225,177,12,0.3);
+            border-radius: 24px;
+            padding: 50px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        .qual-form-group {
+            margin-bottom: 25px;
+        }
+        .qual-form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #fff;
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+        .qual-form-control {
+            width: 100%;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        .qual-form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(225,177,12,0.15);
+            background: rgba(0,0,0,0.6);
+        }
+        .qual-select {
+            appearance: none;
+            cursor: pointer;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%24%2024%22%20fill%3D%22none%22%20stroke%3D%22%23E1B10C%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 20px center;
+            background-size: 18px;
+            padding-right: 50px;
+        }
+        .grid-2-cols {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        /* Esconde links no cabeçalho */
+        header.lp-header .nav-links, header.lp-header .menu-toggle {
+            display: none !important;
+        }
+        header.lp-header nav {
+            justify-content: center;
+        }
+
+        /* Dot Navigation (Menu Lateral Discreto) */
+        .dot-nav {
+            position: fixed;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 1000;
+        }
+        .dot-nav .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        .dot-nav .dot:hover {
+            background: var(--primary);
+            transform: scale(1.3);
+        }
+        /* Tooltip do Dot Nav */
+        .dot-nav .dot::before {
+            content: attr(title);
+            position: absolute;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(15, 15, 17, 0.9);
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            border: 1px solid rgba(225,177,12,0.3);
+        }
+        .dot-nav .dot:hover::before {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2-cols { grid-template-columns: 1fr; gap: 0; }
+            .qualification-container { padding: 30px 20px; }
+            .lp-hero { padding: 120px 5% 60px; }
+            .dot-nav { display: none; }
+        }
+    </style>
+
+    <!-- Google reCAPTCHA v3 -->
+    <script src="https://www.google.com/recaptcha/api.js?render=6LdJVFQtAAAAAF4x3bwkWXOMP7qTCjGEAXa8RIZc"></script>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-G17QW5WVEJ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-G17QW5WVEJ');
+    </script>
+</head>
+<body class="<%= typeof theme !== 'undefined' ? theme : '' %>">
+    <!-- Cabeçalho e logo removidos para focar na copy (conforme estratégia) -->
