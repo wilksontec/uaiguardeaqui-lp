@@ -173,8 +173,8 @@
     .hero-block h1 { text-wrap: balance; }
     
     /* BLOCO 02 - DOR */
-    .pain-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 50px; }
-    .pain-card { background: rgba(200, 80, 80, 0.04); border: 1px solid rgba(200, 80, 80, 0.15); padding: 30px 20px; border-radius: 16px; transition: transform 0.3s; display: flex; flex-direction: column; align-items: center; text-align: center; height: 100%; }
+    .pain-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; margin-top: 50px; }
+    .pain-card { flex: 1 1 300px; max-width: 380px; background: rgba(200, 80, 80, 0.04); border: 1px solid rgba(200, 80, 80, 0.15); padding: 30px 20px; border-radius: 16px; transition: transform 0.3s; display: flex; flex-direction: column; align-items: center; text-align: center; height: 100%; }
     .pain-card:hover { transform: translateY(-5px); border-color: rgba(200, 80, 80, 0.3); }
     .pain-icon { margin-bottom: 15px; color: #d65c5c; display: flex; justify-content: center; }
     .pain-icon svg { width: 32px; height: 32px; flex-shrink: 0; }
