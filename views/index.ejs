@@ -539,8 +539,21 @@
     <section class="lp-block">
         <div class="max-w-800 text-center" style="margin: 0 auto;">
             <img src="/images/logo/logo.webp" alt="Uai Guarde Aqui" style="max-height: 120px; margin: 0 auto 40px;">
-            <p style="color: #fff; line-height: 1.6; font-size: 1.8rem; font-style: italic; font-weight: 500;">
-                "Nós não guardamos apenas objetos.<br>Guardamos <span class="text-highlight">histórias, projetos e novos começos.</span>"
+            <style>
+                .quote-text {
+                    color: #fff; line-height: 1.6; font-size: 1.8rem; font-style: italic; font-weight: 500;
+                }
+                .mobile-break { display: none; }
+                @media (max-width: 768px) {
+                    .quote-text {
+                        font-size: 1.4rem; /* Ajustado para a primeira frase caber em 1 linha */
+                    }
+                    .desktop-break { display: none; }
+                    .mobile-break { display: block; }
+                }
+            </style>
+            <p class="quote-text">
+                "Nós não guardamos apenas objetos.<br class="desktop-break"><br class="mobile-break">Guardamos <span class="text-highlight">histórias, projetos<br class="mobile-break">e novos começos.</span>"
             </p>
         </div>
     </section>
