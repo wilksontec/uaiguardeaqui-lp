@@ -69,11 +69,47 @@ app.post('/api/descubra-meu-box', async (req, res) => {
         if (!mensagem) {
             return res.status(400).json({ error: 'Mensagem não fornecida.' });
         }
-        const result = await model.generateContent(mensagem);
-        const text = result.response.text();
+        let text = '';
+        try {
+            // Tenta o Gemini
+            const result = await model.generateContent(mensagem);
+            text = result.response.text();
+        } catch (geminiError) {
+            console.error('Error generating AI response (Gemini), acionando Fallback (Groq):', geminiError.message);
+            // Fallback para a Groq (Llama 3)
+            const systemPrompt = `Você é um especialista em Self Storage da empresa Uai Guarde Aqui, localizada no Vale do Aço (Coronel Fabriciano, Ipatinga, Timóteo).
+Sua missão é ajudar o usuário a escolher o tamanho ideal de box com base no que ele descrever.
+Temos 4 opções de boxes (Lembre-se que nossos boxes têm 3 metros de altura (pé-direito), permitindo empilhamento vertical):
+1. Box Micro (1m² / 3m³): Ideal para documentos, malas, itens sazonais, ou 5-8 caixas médias.
+2. Box Pequeno (3m² / 9m³): Ideal para mobília de 1 cômodo pequeno, eletrodomésticos, cama de casal desmontada.
+3. Box Médio (4,5m² / 13,5m³): Ideal para mudança de apartamento de 1 ou 2 quartos. Comporta móveis de sala, cozinha inteira e caixas.
+4. Box Grande (6m² / 18m³): Ideal para mudança completa familiar ou estoques comerciais grandes. Equivale a um caminhão baú médio.
+
+Analise a mensagem do usuário e recomende o box ideal. 
+Sua resposta deve ser curta, direta, amigável e usar uma linguagem comercial persuasiva.
+Comece recomendando o box direto e depois justifique brevemente. Formate a resposta em texto puro (sem markdown complexo, no máximo quebras de linha).`;
+
+            const groqReq = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: 'llama-3.3-70b-versatile',
+                    messages: [
+                        { role: 'system', content: systemPrompt },
+                        { role: 'user', content: mensagem }
+                    ]
+                })
+            });
+            const groqData = await groqReq.json();
+            if (groqData.error) throw new Error(groqData.error.message);
+            text = groqData.choices[0].message.content;
+        }
         res.json({ recomendacao: text });
     } catch (error) {
-        console.error('Error generating AI response:', error);
+        console.error('Final AI Error:', error);
         res.status(500).json({ error: 'Erro ao analisar os itens. Tente novamente mais tarde.' });
     }
 });
