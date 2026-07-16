@@ -225,9 +225,9 @@
     .review-text { color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; flex-grow: 1; font-style: italic; }
     
     /* BLOCO 08 - FAQ / OBJEÇÕES */
-    .faq-container { text-align: left; max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
-    .faq-item { background: var(--bg-card); border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
-    .faq-q { padding: 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 1.1rem; }
+    .faq-container { text-align: left; max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .faq-item { background: var(--bg-card); border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; height: 100%; }
+    .faq-q { padding: 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 1.1rem; flex-grow: 1; }
     .faq-a { padding: 0 20px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; color: var(--text-muted); }
     .faq-item.active .faq-a { padding: 0 20px 20px; max-height: 300px; }
     .faq-item.active .faq-icon { transform: rotate(45deg); color: var(--primary); }
