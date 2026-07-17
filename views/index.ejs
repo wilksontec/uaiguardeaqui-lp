@@ -291,7 +291,7 @@
         <p class="lp-subtitle max-w-800">Descubra como funciona o primeiro Box Privativo do Vale do Aço e veja por que milhares de pessoas estão abandonando aluguéis comerciais caros. Assista ao vídeo abaixo:</p>
         
         <div class="video-container">
-            <iframe id="vsl-video" src="https://player.vimeo.com/video/1210860203?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" title="vsl uai guarde aqui" style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>
+            <video id="vsl-video" src="/images/vsl.mp4" style="position:absolute;top:0;left:0;width:100%;height:100%;" playsinline preload="metadata"></video>
             
             <!-- Capa Customizada -->
             <div id="vsl-cover" class="video-cover">
@@ -692,29 +692,28 @@
 </div>
 
 <!-- Scripts -->
-<script src="https://player.vimeo.com/api/player.js"></script>
 <script>
-// Inicializa a API do Vimeo
-var iframe = document.getElementById('vsl-video');
-var player = new Vimeo.Player(iframe);
+// Inicializa o Vídeo Nativo
+var video = document.getElementById('vsl-video');
 
 // Interação com a Capa Customizada
 document.getElementById('vsl-cover').addEventListener('click', function() {
-    player.play();
+    video.play();
     this.classList.add('cover-hidden');
 });
 
 var vslRevealed = false;
 
 // Garante que a capa suma se o usuário der o play nativamente
-player.on('play', function() {
+video.addEventListener('play', function() {
     document.getElementById('vsl-cover').classList.add('cover-hidden');
+    video.setAttribute("controls", "controls"); // Mostra controles para permitir pausar
 });
 
-// VSL Player API (Vimeo): Checa o tempo de reprodução em tempo real
-player.on('timeupdate', function(data) {
-    // data.seconds retorna o tempo atual exato em que o vídeo está
-    if (data.seconds >= 15 && !vslRevealed) {
+// VSL Player nativo: Checa o tempo de reprodução em tempo real
+video.addEventListener('timeupdate', function() {
+    // currentTime retorna o tempo atual exato em que o vídeo está
+    if (video.currentTime >= 15 && !vslRevealed) {
         vslRevealed = true;
         
         // Libera a página
